@@ -1,6 +1,7 @@
 import json
 import sys
 import time
+import os
 
 DEBUG = 4
 debug_fout = None
@@ -292,7 +293,17 @@ def l_do_placement(table):
 		
 def l_load_table():
 	info('Beginning placement preparation')
-	f_in = open('blank_sudoku.json')
+	
+	if len(sys.argv) != 2:
+		error('Expected exactly one command line argument giving the name of the sudoku file in jSON format')
+		exit(1)
+	
+	sudoku_filename = sys.argv[1]
+	if not os.path.isfile(sudoku_filename):
+		error('Could not open sudoku filename %s'%sudoku_filename)
+		exit(1)
+	
+	f_in = open(sudoku_filename)
 	int_2d_array = json.load(f_in)
 	table = sudoku_table_t(int_2d_array)
 	table.dump(stage = 'initial board')
